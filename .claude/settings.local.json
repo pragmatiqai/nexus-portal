@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir)",
+      "Bash(mkdir:*)",
+      "Bash(npm install)",
+      "Bash(node test-connection.js:*)",
+      "Bash(npm start)",
+      "Bash(npm run dev:*)",
+      "Bash(timeout /t 3)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(taskkill /F /PID 26676)",
+      "Bash(taskkill //F //PID 26676)",
+      "Bash(taskkill //F //PID 7500)",
+      "Bash(taskkill //F //PID 16024)",
+      "Bash(curl:*)",
+      "Bash(git init:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
