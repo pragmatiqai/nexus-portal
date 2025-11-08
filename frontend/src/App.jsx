@@ -6,10 +6,14 @@ import UserFilter from './components/UserFilter';
 import RiskFilter from './components/RiskFilter';
 import Pagination from './components/Pagination';
 import SyncButton from './components/SyncButton';
+import Login from './components/Login';
+import Dashboard from './components/Dashboard';
 import './App.css';
 
 function App() {
-  const [view, setView] = useState('conversations'); // 'conversations' or 'detail'
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [view, setView] = useState('dashboard'); // 'dashboard', 'conversations' or 'detail'
   const [selectedConversationId, setSelectedConversationId] = useState(null);
   const [conversations, setConversations] = useState([]);
   const [filteredConversations, setFilteredConversations] = useState([]);
@@ -25,10 +29,24 @@ function App() {
     totalPages: 0
   });
 
+  // Authentication handlers
+  const handleLogin = (user) => {
+    setIsAuthenticated(true);
+    setCurrentUser(user);
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setCurrentUser(null);
+    setView('dashboard');
+  };
+
   // Fetch users on mount
   useEffect(() => {
-    fetchUsers();
-  }, []);
+    if (isAuthenticated) {
+      fetchUsers();
+    }
+  }, [isAuthenticated]);
 
   // Fetch conversations when page or user filter changes
   useEffect(() => {
@@ -118,14 +136,51 @@ function App() {
     fetchUsers();
   };
 
+  // Show login page if not authenticated
+  if (!isAuthenticated) {
+    return <Login onLogin={handleLogin} />;
+  }
+
   return (
     <div className="app">
       <header className="app-header">
-        <h1>AI Proxy Message Viewer</h1>
+        <div className="header-content">
+          <div className="header-left">
+            <img
+              src="https://static.tildacdn.net/tild6239-3039-4366-b234-663533363332/Frame_7_2.svg"
+              alt="NexusAI Logo"
+              className="logo"
+            />
+            <h1>AI Compliance Platform</h1>
+          </div>
+          <div className="header-right">
+            <span className="user-name">{currentUser?.name}</span>
+            <button className="logout-button" onClick={handleLogout}>
+              Logout
+            </button>
+          </div>
+        </div>
       </header>
 
+      <nav className="app-nav">
+        <button
+          className={`nav-button ${view === 'dashboard' ? 'active' : ''}`}
+          onClick={() => setView('dashboard')}
+        >
+          Dashboard
+        </button>
+        <button
+          className={`nav-button ${view === 'conversations' ? 'active' : ''}`}
+          onClick={() => setView('conversations')}
+        >
+          Conversations
+        </button>
+      </nav>
+
       <main className="app-main">
-        {view === 'conversations' ? (
+        {view === 'dashboard' ? (
+          <Dashboard />
+        ) : view === 'conversations' ? (
           <>
             <div className="controls">
               <div className="controls-left">

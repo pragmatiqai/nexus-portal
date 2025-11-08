@@ -1,21 +1,23 @@
 .conversation-card {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
   overflow: hidden;
   transition: all 0.2s;
   cursor: pointer;
 }
 
 .conversation-card:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   transform: translateY(-2px);
+  border-color: hsl(172, 89%, 40%);
 }
 
 .conversation-header {
-  background: #f8f9fa;
+  background: var(--muted);
   padding: 1rem 1.5rem;
-  border-bottom: 1px solid #e9ecef;
+  border-bottom: 1px solid var(--border);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -31,22 +33,23 @@
 
 .conversation-username {
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--foreground);
   font-size: 1.05rem;
 }
 
 .conversation-count {
-  background: #3498db;
+  background: var(--primary);
   color: white;
   padding: 0.3rem 0.7rem;
   border-radius: 20px;
-  font-size: 0.85rem;
-  font-weight: 500;
+  font-size: 0.8rem;
+  font-weight: 600;
 }
 
 .conversation-time {
-  color: #6c757d;
-  font-size: 0.9rem;
+  color: var(--muted-foreground);
+  font-size: 0.85rem;
+  font-weight: 500;
 }
 
 .conversation-preview {
@@ -54,55 +57,56 @@
 }
 
 .preview-label {
-  font-size: 0.85rem;
-  color: #6c757d;
-  font-weight: 500;
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  font-weight: 600;
   margin-bottom: 0.5rem;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
 }
 
 .preview-text {
-  color: #333;
+  color: var(--foreground);
   line-height: 1.6;
   font-size: 0.95rem;
 }
 
 .conversation-footer {
   padding: 1rem 1.5rem;
-  background: #f8f9fa;
-  border-top: 1px solid #e9ecef;
+  background: var(--muted);
+  border-top: 1px solid var(--border);
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 .conversation-id {
-  color: #6c757d;
-  font-size: 0.8rem;
-  font-family: monospace;
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+  font-family: 'Courier New', monospace;
+  font-weight: 500;
 }
 
 .view-btn {
-  background: #3498db;
+  background: var(--primary);
   color: white;
   border: none;
   padding: 0.5rem 1rem;
-  border-radius: 6px;
-  font-weight: 500;
+  border-radius: calc(var(--radius) - 2px);
+  font-weight: 600;
   cursor: pointer;
   transition: background 0.2s;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
 }
 
 .view-btn:hover {
-  background: #2980b9;
+  background: var(--primary-hover);
 }
 
 /* Risk Badge Styles */
 .risk-badge {
-  padding: 0.3rem 0.6rem;
-  border-radius: 6px;
+  padding: 0.3rem 0.7rem;
+  border-radius: calc(var(--radius) - 2px);
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.5px;
@@ -111,19 +115,19 @@
 }
 
 .risk-badge-low {
-  background: #d4edda;
-  color: #155724;
-  border: 1px solid #c3e6cb;
+  background: hsl(142, 76%, 90%);
+  color: var(--status-success);
+  border: 1px solid hsl(142, 76%, 80%);
 }
 
 .risk-badge-medium {
-  background: #fff3cd;
-  color: #856404;
-  border: 1px solid #ffeeba;
+  background: hsl(45, 93%, 90%);
+  color: hsl(45, 93%, 35%);
+  border: 1px solid hsl(45, 93%, 80%);
 }
 
 .risk-badge-high {
-  background: #f8d7da;
-  color: #721c24;
-  border: 1px solid #f5c6cb;
+  background: hsl(0, 72%, 90%);
+  color: var(--status-danger);
+  border: 1px solid hsl(0, 72%, 80%);
 }

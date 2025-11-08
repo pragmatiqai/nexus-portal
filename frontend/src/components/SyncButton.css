@@ -5,37 +5,40 @@
 }
 
 .sync-button {
-  background: #27ae60;
+  background: var(--nexus-blue);
   color: white;
   border: none;
   padding: 0.6rem 1.2rem;
-  border-radius: 6px;
-  font-weight: 500;
+  border-radius: calc(var(--radius) - 2px);
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
-  font-size: 0.95rem;
+  transition: all 0.2s;
+  font-size: 0.9rem;
 }
 
 .sync-button:hover:not(:disabled) {
-  background: #229954;
+  background: hsl(172, 89%, 25%);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px hsla(172, 89%, 29%, 0.3);
 }
 
 .sync-button:disabled {
-  background: #95a5a6;
+  background: var(--muted-foreground);
   cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .sync-status {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
 }
 
 .sync-success {
-  color: #27ae60;
-  font-weight: 500;
+  color: var(--status-success);
+  font-weight: 600;
 }
 
 .sync-error {
-  color: #e74c3c;
-  font-size: 0.85rem;
-  font-weight: 500;
+  color: var(--status-danger);
+  font-size: 0.8rem;
+  font-weight: 600;
 }

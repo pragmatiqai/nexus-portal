@@ -5,28 +5,30 @@
 }
 
 .user-filter label {
-  font-weight: 500;
-  color: #333;
-  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--foreground);
+  font-size: 0.9rem;
 }
 
 .user-select {
   padding: 0.6rem 1rem;
-  border: 2px solid #ddd;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  background-color: white;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 2px);
+  font-size: 0.9rem;
+  font-weight: 500;
+  background-color: var(--card-bg);
+  color: var(--foreground);
   cursor: pointer;
-  transition: border-color 0.2s;
+  transition: all 0.2s;
   min-width: 200px;
 }
 
 .user-select:hover {
-  border-color: #3498db;
+  border-color: var(--nexus-blue);
 }
 
 .user-select:focus {
   outline: none;
-  border-color: #3498db;
-  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+  border-color: var(--nexus-blue);
+  box-shadow: 0 0 0 3px hsla(172, 89%, 29%, 0.1);
 }

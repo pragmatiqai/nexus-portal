@@ -168,6 +168,113 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Get dashboard statistics
+router.get('/dashboard/stats', async (req, res) => {
+  try {
+    const now = new Date();
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+    // Get total messages count
+    const totalMessagesResponse = await esClient.count({
+      index: INDEX_NAME
+    });
+    const totalMessages = totalMessagesResponse.count;
+
+    // Get total conversations count
+    const conversationsIndexExists = await esClient.indices.exists({ index: CONVERSATIONS_INDEX });
+    let totalConversations = 0;
+    let conversationsLast30Days = 0;
+    let criticalIssuesLast30Days = 0;
+    let highRiskIssuesLast30Days = 0;
+
+    if (conversationsIndexExists) {
+      // Total conversations
+      const totalConversationsResponse = await esClient.count({
+        index: CONVERSATIONS_INDEX
+      });
+      totalConversations = totalConversationsResponse.count;
+
+      // Conversations in last 30 days
+      const conversationsLast30Response = await esClient.count({
+        index: CONVERSATIONS_INDEX,
+        body: {
+          query: {
+            range: {
+              lastMessageTime: {
+                gte: thirtyDaysAgo.toISOString()
+              }
+            }
+          }
+        }
+      });
+      conversationsLast30Days = conversationsLast30Response.count;
+
+      // Critical issues in last 30 days
+      const criticalIssuesResponse = await esClient.count({
+        index: CONVERSATIONS_INDEX,
+        body: {
+          query: {
+            bool: {
+              must: [
+                {
+                  term: {
+                    'riskAssessment.overall_risk_level': 'CRITICAL'
+                  }
+                },
+                {
+                  range: {
+                    lastMessageTime: {
+                      gte: thirtyDaysAgo.toISOString()
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      });
+      criticalIssuesLast30Days = criticalIssuesResponse.count;
+
+      // High risk issues in last 30 days
+      const highRiskIssuesResponse = await esClient.count({
+        index: CONVERSATIONS_INDEX,
+        body: {
+          query: {
+            bool: {
+              must: [
+                {
+                  term: {
+                    'riskAssessment.overall_risk_level': 'HIGH'
+                  }
+                },
+                {
+                  range: {
+                    lastMessageTime: {
+                      gte: thirtyDaysAgo.toISOString()
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      });
+      highRiskIssuesLast30Days = highRiskIssuesResponse.count;
+    }
+
+    res.json({
+      totalConversations,
+      totalMessages,
+      conversationsLast30Days,
+      criticalIssuesLast30Days,
+      highRiskIssuesLast30Days
+    });
+  } catch (error) {
+    console.error('Error fetching dashboard stats:', error);
+    res.status(500).json({ error: 'Failed to fetch dashboard statistics', message: error.message });
+  }
+});
+
 // Get unique users
 router.get('/users', async (req, res) => {
   try {

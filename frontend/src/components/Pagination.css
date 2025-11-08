@@ -5,32 +5,36 @@
   gap: 1rem;
   margin-top: 2rem;
   padding: 1.5rem;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
 .page-btn {
   padding: 0.6rem 1.2rem;
-  border: 2px solid #3498db;
-  background: white;
-  color: #3498db;
-  border-radius: 6px;
-  font-weight: 500;
+  border: 1px solid var(--primary);
+  background: var(--card-bg);
+  color: var(--primary);
+  border-radius: calc(var(--radius) - 2px);
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+  font-size: 0.9rem;
 }
 
 .page-btn:hover:not(:disabled) {
-  background: #3498db;
+  background: var(--primary);
   color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px hsla(207, 90%, 54%, 0.2);
 }
 
 .page-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
-  border-color: #ccc;
-  color: #ccc;
+  border-color: var(--border);
+  color: var(--muted-foreground);
 }
 
 .page-numbers {
@@ -41,27 +45,31 @@
 
 .page-number {
   padding: 0.5rem 0.9rem;
-  border: 1px solid #ddd;
-  background: white;
-  color: #333;
-  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--foreground);
+  border-radius: calc(var(--radius) - 2px);
   cursor: pointer;
   transition: all 0.2s;
-  font-weight: 500;
+  font-weight: 600;
+  min-width: 2.5rem;
+  text-align: center;
 }
 
 .page-number:hover {
-  border-color: #3498db;
-  color: #3498db;
+  border-color: var(--primary);
+  color: var(--primary);
+  background: hsl(207, 90%, 96%);
 }
 
 .page-number.active {
-  background: #3498db;
+  background: var(--primary);
   color: white;
-  border-color: #3498db;
+  border-color: var(--primary);
 }
 
 .ellipsis {
   padding: 0.5rem;
-  color: #666;
+  color: var(--muted-foreground);
+  font-weight: 600;
 }

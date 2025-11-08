@@ -5,15 +5,95 @@
 }
 
 .app-header {
-  background-color: #2c3e50;
+  background-color: #191919;
   color: white;
   padding: 1.5rem 2rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo {
+  height: 60px;
+  width: auto;
 }
 
 .app-header h1 {
   font-size: 1.8rem;
   font-weight: 600;
+}
+
+.user-name {
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.logout-button {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.5rem 1rem;
+  border-radius: calc(var(--radius) - 2px);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+
+.logout-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.app-nav {
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border);
+  padding: 1rem 2rem;
+  display: flex;
+  gap: 1rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.nav-button {
+  background: transparent;
+  border: none;
+  color: var(--muted-foreground);
+  padding: 0.75rem 1.5rem;
+  border-radius: calc(var(--radius) - 2px);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+
+.nav-button:hover {
+  background: var(--muted);
+  color: var(--foreground);
+}
+
+.nav-button.active {
+  background: var(--nexus-blue);
+  color: white;
 }
 
 .app-main {
@@ -25,10 +105,11 @@
 }
 
 .controls {
-  background: white;
+  background: var(--card-bg);
   padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
   margin-bottom: 2rem;
   display: flex;
   justify-content: space-between;
@@ -49,31 +130,33 @@
   align-items: center;
   gap: 1rem;
   font-size: 0.95rem;
-  color: #555;
+  color: var(--muted-foreground);
+  font-weight: 500;
 }
 
 .filter-badge {
-  background-color: #3498db;
+  background-color: var(--primary);
   color: white;
   padding: 0.4rem 0.8rem;
   border-radius: 20px;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 600;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
 }
 
 .filter-badge-risk {
-  background-color: #9b59b6;
+  background-color: var(--status-warning);
 }
 
 .filtered-count {
-  background-color: #2ecc71;
+  background-color: var(--status-success);
   color: white;
   padding: 0.4rem 0.8rem;
   border-radius: 20px;
-  font-size: 0.9rem;
-  font-weight: 500;
+  font-size: 0.85rem;
+  font-weight: 600;
 }
 
 .clear-filter {
@@ -100,14 +183,15 @@
   text-align: center;
   padding: 3rem;
   font-size: 1.1rem;
-  color: #666;
+  color: var(--muted-foreground);
 }
 
 .error-message {
-  background-color: #fee;
-  border: 1px solid #fcc;
-  color: #c33;
+  background-color: hsl(0, 100%, 97%);
+  border: 1px solid hsl(0, 72%, 85%);
+  color: var(--status-danger);
   padding: 1rem;
-  border-radius: 8px;
+  border-radius: var(--radius);
   margin-bottom: 1rem;
+  font-weight: 500;
 }

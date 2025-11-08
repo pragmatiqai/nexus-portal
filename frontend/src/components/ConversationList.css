@@ -1,14 +1,16 @@
 .conversation-list {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
 .empty-state {
-  background: white;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
   padding: 3rem;
-  border-radius: 8px;
+  border-radius: var(--radius);
   text-align: center;
-  color: #666;
+  color: var(--muted-foreground);
   font-size: 1.1rem;
+  font-weight: 500;
 }
