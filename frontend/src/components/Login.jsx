@@ -65,12 +65,6 @@ function Login({ onLogin }) {
           <button type="submit" className="login-button">
             Sign In
           </button>
-
-          <div className="test-credentials">
-            <p>Test credentials:</p>
-            <p><strong>Email:</strong> admin@nexusai.com</p>
-            <p><strong>Password:</strong> admin123</p>
-          </div>
         </form>
       </div>
     </div>

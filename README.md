@@ -1,68 +1,109 @@
-# AI Proxy Message Viewer
+# Nexus Portal - AI Compliance Platform
 
-A web application for viewing and filtering AI proxy messages from an Elasticsearch database.
+A comprehensive web application for monitoring, analyzing, and managing AI conversations with advanced risk assessment and compliance tracking. Built by PragmatiqAI to ensure your AI systems meet regulatory requirements and organizational policies.
+
+![PragmatiqAI](frontend/public/pragmatiq-logo.png)
 
 ## Features
 
-- View user messages and AI responses from Elasticsearch
-- Filter messages by username
-- Pagination support for large datasets
-- Clean, modern UI with expandable message cards
-- Real-time connection to Elasticsearch
+### 🔐 Authentication
+- Secure login system with email and password
+- Session management
+- User profile display
+
+### 📊 Dashboard
+- Total conversations and messages statistics
+- 30-day activity metrics
+- Critical and high-risk issue tracking
+- Real-time data visualization
+
+### 💬 Conversation Management
+- View and filter AI conversations by user
+- Risk-based filtering (Critical, High, Medium, Low)
+- Detailed conversation timeline view
+- Message-by-message analysis
+
+### ⚠️ Risk Assessment
+- Automated risk level detection
+- Integration with n8n workflow automation
+- Risk categorization (Critical, High, Medium, Low)
+- Compliance violation tracking
+
+### 🔄 Data Synchronization
+- Real-time sync with Elasticsearch
+- Conversation grouping and indexing
+- Automated risk assessment updates
+
+### 🎨 Modern UI/UX
+- PragmatiqAI branded design
+- Responsive layout
+- Inter font family
+- Clean, professional interface
 
 ## Tech Stack
 
 **Backend:**
-- Node.js
-- Express
+- Node.js with Express
 - Elasticsearch client (@elastic/elasticsearch)
+- RESTful API architecture
+- Docker support
 
 **Frontend:**
-- React (with Vite)
-- Axios for API calls
-- Modern CSS styling
+- React 18 with Vite
+- Axios for API communication
+- CSS Variables for theming
+- Nginx for production serving
 
-## Project Structure
+**Infrastructure:**
+- Docker & Docker Compose
+- Multi-stage builds for optimization
+- Health checks and auto-restart
+- Alpine Linux base images
 
-```
-Nexus/
-├── backend/
-│   ├── config/
-│   │   └── elasticsearch.js    # Elasticsearch client configuration
-│   ├── routes/
-│   │   └── messages.js          # API routes for messages
-│   ├── .env.example             # Environment variables template
-│   ├── package.json
-│   └── server.js                # Express server
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── MessageCard.jsx
-│   │   │   ├── MessageList.jsx
-│   │   │   ├── UserFilter.jsx
-│   │   │   └── Pagination.jsx
-│   │   ├── App.jsx
-│   │   ├── App.css
-│   │   ├── main.jsx
-│   │   └── index.css
-│   ├── index.html
-│   ├── package.json
-│   └── vite.config.js
-└── README.md
-```
+## Quick Start
 
-## Setup Instructions
+### Using Docker (Recommended)
 
-### Prerequisites
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/pragmatiqai/nexus-portal.git
+   cd nexus-portal
+   ```
 
-- Node.js (v16 or higher)
+2. **Configure environment**
+   ```bash
+   cp .env.example .env
+   ```
+
+   Edit `.env` with your Elasticsearch credentials:
+   ```env
+   ES_NODE=http://your-elasticsearch-host:9200
+   ES_INDEX=ai-proxy-message
+   ES_API_KEY=your-api-key
+   PORT=3001
+   ```
+
+3. **Run with Docker Compose**
+   ```bash
+   docker-compose up -d
+   ```
+
+4. **Access the application**
+   - Frontend: http://localhost
+   - Backend API: http://localhost:3001
+
+See [DOCKER.md](DOCKER.md) for detailed Docker deployment instructions.
+
+### Manual Setup
+
+#### Prerequisites
+- Node.js (v18 or higher)
 - npm or yarn
-- Elasticsearch instance running and accessible
-- Data in the `ai-proxy-message` index
+- Elasticsearch instance with API key authentication
 
-### Backend Setup
+#### Backend Setup
 
-1. Navigate to the backend directory:
+1. Navigate to backend directory:
    ```bash
    cd backend
    ```
@@ -72,30 +113,27 @@ Nexus/
    npm install
    ```
 
-3. Create a `.env` file from the example:
+3. Create `.env` file:
    ```bash
-   copy .env.example .env
+   cp .env.example .env
    ```
 
-4. Edit the `.env` file with your Elasticsearch credentials:
+4. Edit `.env` with your configuration:
    ```env
-   ES_NODE=http://localhost:9200
-   ES_USERNAME=elastic
-   ES_PASSWORD=your_password_here
+   ES_NODE=http://your-elasticsearch-host:9200
    ES_INDEX=ai-proxy-message
+   ES_API_KEY=your-api-key
    PORT=3001
    ```
 
-5. Start the backend server:
+5. Start the server:
    ```bash
    npm run dev
    ```
 
-   The backend will run on `http://localhost:3001`
+#### Frontend Setup
 
-### Frontend Setup
-
-1. Navigate to the frontend directory:
+1. Navigate to frontend directory:
    ```bash
    cd frontend
    ```
@@ -105,127 +143,223 @@ Nexus/
    npm install
    ```
 
-3. Start the development server:
+3. Start development server:
    ```bash
    npm run dev
    ```
 
-   The frontend will run on `http://localhost:3000`
+4. Access at http://localhost:3000
 
-### Running the Application
+## Project Structure
 
-1. Make sure your Elasticsearch instance is running and accessible
-2. Start the backend server (in the `backend` directory):
-   ```bash
-   npm run dev
-   ```
-
-3. In a new terminal, start the frontend (in the `frontend` directory):
-   ```bash
-   npm run dev
-   ```
-
-4. Open your browser and navigate to `http://localhost:3000`
+```
+nexus-portal/
+├── backend/
+│   ├── config/
+│   │   └── elasticsearch.js       # Elasticsearch client
+│   ├── routes/
+│   │   ├── messages.js             # Message & conversation routes
+│   │   └── sync.js                 # Sync operations
+│   ├── services/
+│   │   └── conversationSync.js     # Conversation grouping logic
+│   ├── .env.example
+│   ├── Dockerfile
+│   ├── package.json
+│   └── server.js
+├── frontend/
+│   ├── public/
+│   │   └── pragmatiq-logo.png      # PragmatiqAI logo
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Dashboard.jsx       # Dashboard with statistics
+│   │   │   ├── Login.jsx           # Authentication page
+│   │   │   ├── ConversationList.jsx
+│   │   │   ├── ConversationDetail.jsx
+│   │   │   ├── ConversationCard.jsx
+│   │   │   ├── UserFilter.jsx
+│   │   │   ├── RiskFilter.jsx
+│   │   │   ├── Pagination.jsx
+│   │   │   └── SyncButton.jsx
+│   │   ├── App.jsx
+│   │   └── index.css               # CSS variables & theming
+│   ├── Dockerfile
+│   ├── nginx.conf
+│   └── package.json
+├── docker-compose.yml
+├── .env.example
+├── DOCKER.md
+└── README.md
+```
 
 ## API Endpoints
 
-### GET `/api/messages`
-Fetch messages with optional filtering and pagination.
+### Authentication
+The application currently uses client-side authentication. Backend integration can be added as needed.
 
-**Query Parameters:**
-- `username` (optional): Filter by specific user
-- `page` (optional): Page number (default: 1)
-- `size` (optional): Number of messages per page (default: 50)
+### Dashboard
+- **GET** `/api/messages/dashboard/stats`
+  - Returns: Total conversations, messages, 30-day metrics, critical/high risk counts
 
-**Response:**
-```json
-{
-  "messages": [...],
-  "total": 100,
-  "page": 1,
-  "size": 50,
-  "totalPages": 2
-}
-```
+### Conversations
+- **GET** `/api/messages/conversations`
+  - Query params: `username`, `page`, `size`
+  - Returns: Paginated conversation list with risk assessments
 
-### GET `/api/messages/users`
-Get list of unique users with message counts.
+- **GET** `/api/messages/conversations/:conversationId`
+  - Returns: All messages in a conversation
 
-**Response:**
-```json
-{
-  "users": [
-    {
-      "username": "user1",
-      "count": 45
-    }
-  ]
-}
-```
+- **POST** `/api/messages/conversations/:conversationId/risk-assessment`
+  - Body: Risk assessment data
+  - Updates conversation risk level
 
-### GET `/api/messages/:id`
-Get a specific message by ID.
+### Messages
+- **GET** `/api/messages`
+  - Query params: `username`, `page`, `size`
+  - Returns: Paginated message list
 
-**Response:**
-```json
-{
-  "id": "...",
-  "username": "...",
-  "userQuestion": "...",
-  "parsedResponse": "...",
-  ...
-}
-```
+- **GET** `/api/messages/users`
+  - Returns: List of unique users with message counts
 
-## Elasticsearch Index Schema
+### Sync Operations
+- **POST** `/api/sync/sync`
+  - Triggers conversation sync and grouping
+  - Creates/updates conversations index
 
-The application expects documents in the `ai-proxy-message` index with the following fields:
+## Elasticsearch Indices
 
-- `username` - Username of the requester
-- `userQuestion` - User's question/input
-- `parsedResponse` - AI's parsed response
-- `requestTime` - Timestamp of the request
-- `requestId` - Unique request identifier
+### ai-proxy-message (Source Index)
+Contains raw AI proxy messages with fields:
+- `username` - User identifier
+- `userQuestion` - User's query
+- `parsedResponse` - AI response
+- `rawResponse` - Raw streaming data with conversation_id
+- `requestTime` - Timestamp
+- `requestId` - Unique request ID
 - `clientIp` - Client IP address
-- `rawResponse` - Raw streaming response data
+- `model` - AI model used
 
-## Troubleshooting
+### ai-proxy-conversations (Derived Index)
+Contains grouped conversations with risk assessments:
+- `conversationId` - Unique conversation identifier
+- `username` - User identifier
+- `firstQuestion` - Initial question
+- `lastQuestion` - Most recent question
+- `messageCount` - Number of messages
+- `firstMessageTime` - Start timestamp
+- `lastMessageTime` - End timestamp
+- `model` - AI model used
+- `clientIp` - Client IP
+- `riskAssessment` - Risk analysis object
+  - `overall_risk_level` - CRITICAL, HIGH, MEDIUM, LOW
+  - `risk_factors` - Array of identified risks
+  - `compliance_violations` - Array of violations
+  - `recommendations` - Array of recommendations
 
-### Backend won't connect to Elasticsearch
+## Configuration
 
-- Verify Elasticsearch is running: `curl http://localhost:9200`
-- Check your credentials in the `.env` file
-- Ensure the Elasticsearch node URL is correct
-- Check if the index `ai-proxy-message` exists
+### Environment Variables
 
-### Frontend can't connect to backend
+**Backend (.env):**
+```env
+ES_NODE=http://elasticsearch-host:9200
+ES_INDEX=ai-proxy-message
+ES_API_KEY=your-elasticsearch-api-key
+PORT=3001
+NODE_ENV=production
+```
 
-- Ensure the backend is running on port 3001
-- Check browser console for CORS errors
-- Verify the proxy configuration in `vite.config.js`
+### Login Credentials
 
-### No messages showing up
+Default authentication is handled client-side. Configure users in `frontend/src/components/Login.jsx`:
 
-- Check if your Elasticsearch index has data
-- Verify the index name matches in your `.env` file
-- Check browser network tab for API errors
-- Look at backend console logs for error messages
+```javascript
+// Update credentials as needed
+if (email === 'your-email@domain.com' && password === 'your-password') {
+  onLogin({ email, name: 'User Name' });
+}
+```
 
-## Production Build
+## Development
 
-### Backend
+### Running in Development Mode
+
+**Backend:**
+```bash
+cd backend
+npm run dev
+```
+
+**Frontend:**
+```bash
+cd frontend
+npm run dev
+```
+
+### Building for Production
+
+**Backend:**
 ```bash
 cd backend
 npm start
 ```
 
-### Frontend
+**Frontend:**
 ```bash
 cd frontend
 npm run build
 npm run preview
 ```
 
+## Docker Deployment
+
+See [DOCKER.md](DOCKER.md) for comprehensive Docker deployment guide including:
+- Production configuration
+- Resource limits
+- HTTPS setup
+- Troubleshooting
+- Backup strategies
+
+## Troubleshooting
+
+### Elasticsearch Connection Issues
+1. Verify Elasticsearch is accessible
+2. Check API key is valid
+3. Ensure index exists: `curl -H "Authorization: ApiKey YOUR_KEY" http://es-host:9200/ai-proxy-message`
+
+### Frontend Cannot Reach Backend
+1. Check backend is running: `curl http://localhost:3001/health`
+2. Verify CORS configuration
+3. Check proxy settings in vite.config.js or nginx.conf
+
+### No Data Showing
+1. Run sync operation: `POST http://localhost:3001/api/sync/sync`
+2. Check Elasticsearch has data
+3. Verify index names match in .env
+
+### Docker Issues
+1. Check logs: `docker-compose logs -f`
+2. Verify .env file is configured
+3. Ensure ports are not in use
+4. Restart services: `docker-compose restart`
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
+
+## Support
+
+For issues, questions, or feature requests:
+- GitHub Issues: https://github.com/pragmatiqai/nexus-portal/issues
+- Email: andres.gavriljuk@pragmatiqai.com
+
 ## License
 
-MIT
+MIT License - See LICENSE file for details
+
+---
+
+Built with ❤️ by [PragmatiqAI](https://pragmatiqai.com)
