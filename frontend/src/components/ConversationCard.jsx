@@ -19,6 +19,11 @@ function ConversationCard({ conversation, onClick }) {
         <div className="conversation-meta">
           <span className="conversation-username">{conversation.username || 'Unknown'}</span>
           <span className="conversation-count">{conversation.messageCount} message{conversation.messageCount !== 1 ? 's' : ''}</span>
+          {conversation.riskAssessment && (
+            <span className={`risk-badge risk-badge-${conversation.riskAssessment.overall_risk_level?.toLowerCase()}`}>
+              {conversation.riskAssessment.overall_risk_level}
+            </span>
+          )}
         </div>
         <span className="conversation-time">{formatDate(conversation.lastMessageTime)}</span>
       </div>

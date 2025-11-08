@@ -3,6 +3,7 @@ import axios from 'axios';
 import ConversationList from './components/ConversationList';
 import ConversationDetail from './components/ConversationDetail';
 import UserFilter from './components/UserFilter';
+import RiskFilter from './components/RiskFilter';
 import Pagination from './components/Pagination';
 import SyncButton from './components/SyncButton';
 import './App.css';
@@ -11,8 +12,10 @@ function App() {
   const [view, setView] = useState('conversations'); // 'conversations' or 'detail'
   const [selectedConversationId, setSelectedConversationId] = useState(null);
   const [conversations, setConversations] = useState([]);
+  const [filteredConversations, setFilteredConversations] = useState([]);
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState('');
+  const [selectedRisk, setSelectedRisk] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [pagination, setPagination] = useState({
@@ -71,9 +74,28 @@ function App() {
     }
   };
 
+  // Filter conversations by risk level
+  useEffect(() => {
+    if (!selectedRisk) {
+      setFilteredConversations(conversations);
+    } else if (selectedRisk === 'NOT_ASSESSED') {
+      setFilteredConversations(conversations.filter(conv => !conv.riskAssessment));
+    } else {
+      setFilteredConversations(
+        conversations.filter(conv =>
+          conv.riskAssessment?.overall_risk_level === selectedRisk
+        )
+      );
+    }
+  }, [conversations, selectedRisk]);
+
   const handleUserChange = (username) => {
     setSelectedUser(username);
     setPagination(prev => ({ ...prev, page: 1 })); // Reset to first page
+  };
+
+  const handleRiskChange = (risk) => {
+    setSelectedRisk(risk);
   };
 
   const handlePageChange = (newPage) => {
@@ -112,20 +134,40 @@ function App() {
                   selectedUser={selectedUser}
                   onUserChange={handleUserChange}
                 />
+                <RiskFilter
+                  selectedRisk={selectedRisk}
+                  onRiskChange={handleRiskChange}
+                />
                 <SyncButton onSyncComplete={handleSyncComplete} />
               </div>
 
               <div className="stats">
                 <span>Total Conversations: {pagination.total}</span>
+                {selectedRisk && (
+                  <span className="filter-badge filter-badge-risk">
+                    Risk Level: {selectedRisk === 'NOT_ASSESSED' ? 'Not Assessed' : selectedRisk}
+                    <button
+                      className="clear-filter"
+                      onClick={() => handleRiskChange('')}
+                    >
+                      ×
+                    </button>
+                  </span>
+                )}
                 {selectedUser && (
                   <span className="filter-badge">
-                    Filtered by: {selectedUser}
+                    User: {selectedUser}
                     <button
                       className="clear-filter"
                       onClick={() => handleUserChange('')}
                     >
                       ×
                     </button>
+                  </span>
+                )}
+                {(selectedUser || selectedRisk) && (
+                  <span className="filtered-count">
+                    Showing: {filteredConversations.length}
                   </span>
                 )}
               </div>
@@ -142,7 +184,7 @@ function App() {
             ) : (
               <>
                 <ConversationList
-                  conversations={conversations}
+                  conversations={filteredConversations}
                   onSelectConversation={handleSelectConversation}
                 />
 

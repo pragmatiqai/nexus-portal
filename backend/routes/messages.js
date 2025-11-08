@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const esClient = require('../config/elasticsearch');
-const { CONVERSATIONS_INDEX } = require('../services/conversationSync');
+const { CONVERSATIONS_INDEX, updateRiskAssessment } = require('../services/conversationSync');
 
 const INDEX_NAME = process.env.ES_INDEX || 'ai-proxy-message';
 
@@ -56,7 +56,8 @@ router.get('/conversations', async (req, res) => {
       firstMessageTime: hit._source.firstMessageTime,
       messageCount: hit._source.messageCount,
       model: hit._source.model,
-      clientIp: hit._source.clientIp
+      clientIp: hit._source.clientIp,
+      riskAssessment: hit._source.riskAssessment || null
     }));
 
     res.json({
@@ -215,6 +216,47 @@ router.get('/:id', async (req, res) => {
   } catch (error) {
     console.error('Error fetching message:', error);
     res.status(500).json({ error: 'Failed to fetch message', message: error.message });
+  }
+});
+
+// Update risk assessment for a conversation
+router.post('/conversations/:conversationId/risk-assessment', async (req, res) => {
+  try {
+    const { conversationId } = req.params;
+    const riskAssessmentData = req.body;
+
+    console.log('=== Backend: Risk Assessment Request Received ===');
+    console.log('Conversation ID:', conversationId);
+    console.log('Request body:', JSON.stringify(riskAssessmentData, null, 2));
+
+    // Validate required fields
+    if (!riskAssessmentData.overall_risk_level) {
+      console.error('Validation failed: Missing overall_risk_level');
+      return res.status(400).json({
+        error: 'Missing required field: overall_risk_level',
+        received: riskAssessmentData
+      });
+    }
+
+    console.log('Validation passed, updating conversation...');
+
+    // Update the conversation with risk assessment
+    const result = await updateRiskAssessment(conversationId, riskAssessmentData);
+
+    console.log('Update result:', result);
+    console.log('=== Backend: Risk Assessment Stored Successfully ===');
+
+    res.json(result);
+  } catch (error) {
+    console.error('=== Backend: Risk Assessment Error ===');
+    console.error('Error name:', error.name);
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
+
+    res.status(500).json({
+      error: 'Failed to update risk assessment',
+      message: error.message
+    });
   }
 });
 

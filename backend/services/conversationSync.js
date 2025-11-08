@@ -44,7 +44,30 @@ async function initializeConversationsIndex() {
               totalTokens: { type: 'integer' },
               createdAt: { type: 'date' },
               updatedAt: { type: 'date' },
-              messageIds: { type: 'keyword' }
+              messageIds: { type: 'keyword' },
+              riskAssessment: {
+                properties: {
+                  overall_risk_level: { type: 'keyword' },
+                  primary_violation: { type: 'text' },
+                  confidence_level: { type: 'keyword' },
+                  summary: { type: 'text' },
+                  violations_detected: {
+                    properties: {
+                      ai_act_prohibited: { type: 'keyword' },
+                      ai_act_high_risk: { type: 'keyword' },
+                      gdpr: { type: 'keyword' }
+                    }
+                  },
+                  agent_findings: {
+                    properties: {
+                      critical_ai: { type: 'text' },
+                      high_risk_ai: { type: 'text' },
+                      gdpr: { type: 'text' }
+                    }
+                  },
+                  assessmentDate: { type: 'date' }
+                }
+              }
             }
           },
           settings: {
@@ -75,6 +98,24 @@ async function syncConversations() {
     // Ensure conversations index exists
     await initializeConversationsIndex();
 
+    // Fetch existing conversations to preserve risk assessments
+    console.log('Fetching existing conversations...');
+    const existingConversationsResponse = await esClient.search({
+      index: CONVERSATIONS_INDEX,
+      body: {
+        query: { match_all: {} },
+        size: 10000,
+        _source: true
+      }
+    });
+
+    const existingConversations = new Map();
+    existingConversationsResponse.hits.hits.forEach(hit => {
+      existingConversations.set(hit._source.conversationId, hit._source);
+    });
+
+    console.log(`Found ${existingConversations.size} existing conversations`);
+
     // Fetch all messages
     console.log('Fetching messages from source index...');
     const response = await esClient.search({
@@ -103,6 +144,9 @@ async function syncConversations() {
       }
 
       if (!conversationsMap.has(conversationId)) {
+        // Check if conversation exists in Elasticsearch
+        const existingConv = existingConversations.get(conversationId);
+
         conversationsMap.set(conversationId, {
           conversationId,
           username: source.username,
@@ -114,8 +158,11 @@ async function syncConversations() {
           model: extractModel(source.rawResponse),
           clientIp: source.clientIp,
           messageIds: [],
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
+          // Preserve existing data if conversation already exists
+          createdAt: existingConv ? existingConv.createdAt : new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          // IMPORTANT: Preserve risk assessment if it exists
+          ...(existingConv?.riskAssessment && { riskAssessment: existingConv.riskAssessment })
         });
       }
 
@@ -141,6 +188,22 @@ async function syncConversations() {
     });
 
     console.log(`Grouped into ${conversationsMap.size} conversations`);
+
+    // Count how many were preserved vs new
+    let preservedCount = 0;
+    let newCount = 0;
+    conversationsMap.forEach((conversation, conversationId) => {
+      if (existingConversations.has(conversationId)) {
+        preservedCount++;
+        if (conversation.riskAssessment) {
+          console.log(`  ✓ Preserved risk assessment for conversation: ${conversationId}`);
+        }
+      } else {
+        newCount++;
+      }
+    });
+
+    console.log(`Summary: ${preservedCount} existing conversations updated, ${newCount} new conversations created`);
 
     // Bulk index conversations
     const bulkOperations = [];
@@ -183,7 +246,10 @@ async function syncConversations() {
       durationSeconds: duration,
       messagesProcessed: messages.length,
       conversationsFound: conversationsMap.size,
-      conversationsIndexed: conversationsMap.size
+      conversationsIndexed: conversationsMap.size,
+      existingConversationsUpdated: preservedCount,
+      newConversationsCreated: newCount,
+      riskAssessmentsPreserved: preservedCount > 0 ? 'Yes' : 'No'
     };
 
     console.log('Sync completed successfully:', stats);
@@ -242,10 +308,78 @@ async function getSyncStats() {
   }
 }
 
+// Update risk assessment for a conversation
+async function updateRiskAssessment(conversationId, riskAssessmentData) {
+  try {
+    console.log(`Updating risk assessment for conversation: ${conversationId}`);
+
+    // Ensure the index exists
+    const indexExists = await esClient.indices.exists({ index: CONVERSATIONS_INDEX });
+    if (!indexExists) {
+      throw new Error('Conversations index does not exist');
+    }
+
+    // Check if conversation exists
+    const conversationExists = await esClient.exists({
+      index: CONVERSATIONS_INDEX,
+      id: conversationId
+    });
+
+    if (!conversationExists) {
+      throw new Error(`Conversation ${conversationId} not found`);
+    }
+
+    // Prepare risk assessment data with timestamp
+    const riskAssessment = {
+      overall_risk_level: riskAssessmentData.overall_risk_level,
+      primary_violation: riskAssessmentData.primary_violation,
+      confidence_level: riskAssessmentData.confidence_level,
+      summary: riskAssessmentData.summary,
+      violations_detected: {
+        ai_act_prohibited: riskAssessmentData.violations_detected?.ai_act_prohibited || 'NONE',
+        ai_act_high_risk: riskAssessmentData.violations_detected?.ai_act_high_risk || 'NONE',
+        gdpr: riskAssessmentData.violations_detected?.gdpr || 'NONE'
+      },
+      agent_findings: {
+        critical_ai: riskAssessmentData.agent_findings?.critical_ai || '',
+        high_risk_ai: riskAssessmentData.agent_findings?.high_risk_ai || '',
+        gdpr: riskAssessmentData.agent_findings?.gdpr || ''
+      },
+      assessmentDate: new Date().toISOString()
+    };
+
+    // Update the conversation document
+    const response = await esClient.update({
+      index: CONVERSATIONS_INDEX,
+      id: conversationId,
+      body: {
+        doc: {
+          riskAssessment: riskAssessment,
+          updatedAt: new Date().toISOString()
+        }
+      },
+      refresh: true
+    });
+
+    console.log(`✓ Risk assessment updated successfully for conversation ${conversationId}`);
+
+    return {
+      success: true,
+      conversationId: conversationId,
+      message: 'Risk assessment updated successfully',
+      result: response.result
+    };
+  } catch (error) {
+    console.error('Error updating risk assessment:', error);
+    throw error;
+  }
+}
+
 module.exports = {
   initializeConversationsIndex,
   syncConversations,
   deleteConversationsIndex,
   getSyncStats,
+  updateRiskAssessment,
   CONVERSATIONS_INDEX
 };

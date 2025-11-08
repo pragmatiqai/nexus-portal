@@ -63,6 +63,19 @@
   gap: 0.5rem;
 }
 
+.filter-badge-risk {
+  background-color: #9b59b6;
+}
+
+.filtered-count {
+  background-color: #2ecc71;
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
 .clear-filter {
   background: none;
   border: none;
