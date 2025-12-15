@@ -1,0 +1,378 @@
+{
+  "name": "Nexus_Compliance_Check",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "f435d3c2-458e-44ea-84a7-94373998d6aa",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        464,
+        656
+      ],
+      "id": "55ef58f4-63a0-423d-8edc-9cb4b1b79c01",
+      "name": "Webhook",
+      "webhookId": "f435d3c2-458e-44ea-84a7-94373998d6aa"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an EU AI Act Critical Risk detector. Analyze if the USER's conversation indicates they are using AI system in a PROHIBITED way.\n\nUser conversation: ###{{ $json.body.messages }}###\n\nPROHIBITED INDICATORS:\n- Social scoring by authorities (citizen trustworthiness ratings)\n- Real-time biometric ID in public spaces (live facial recognition, crowd scanning)\n- Biometric categorization of sensitive attributes (race, ethnicity, religion, sexual orientation, political views)\n- Emotion recognition in workplace/education (unless medical/safety exception)\n- Manipulative AI causing significant harm, exploiting vulnerabilities (children, elderly, disabled, economically disadvantaged)\n- Subliminal manipulation techniques\n\nRED FLAGS:\n\"social credit\", \"citizen score\", \"live facial recognition\", \"real-time crowd scanning\", \"detect ethnicity\", \"identify political views\", \"determine sexual orientation\", \"monitor employee emotions\", \"detect student engagement\", \"persuade vulnerable people\", \"target children\", \"subliminal\"\n\n\nOUTPUT:\n{\n  \"critical_violations_detected\": true/false,\n  \"overall_confidence\": \"HIGH/MEDIUM/LOW\",\n  \"reasoning\": \"2-3 sentence summary including violation type and key evidence if detected\"\n}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        704,
+        480
+      ],
+      "id": "facfbba0-9985-4c02-9f75-cf123d56d043",
+      "name": "Critical Risk Violation Detector"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "claude-sonnet-4-20250514",
+          "cachedResultName": "Claude 4 Sonnet"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        560,
+        928
+      ],
+      "id": "26e5e87d-8404-4a6e-b60f-cf50c7d8801b",
+      "name": "Anthropic Chat Model",
+      "credentials": {
+        "anthropicApi": {
+          "id": "z6xCnWnhjmBBh8rL",
+          "name": "Anthropic account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an EU AI Act High Risk detector. Analyze if USER is using AI systems without showing compliance awareness with High-Risk indicators.\n\nUser conversation: ###{{ $json.body.messages }}###\n\nHIGH-RISK Indicators:\n- Biometric ID/verification (not real-time public)\n- Critical infrastructure (power, water, transport safety systems)\n- Education (admission decisions, student evaluation, exam proctoring)\n- Employment (CV screening, hiring, monitoring, performance evaluation, termination)\n- Essential services (credit scoring, loan approval, emergency dispatch, benefit eligibility)\n- Law enforcement (risk assessment, lie/emotion detection, evidence analysis)\n- Migration/border (visa risk scoring, document verification)\n- Justice (legal research support, case prediction)\n\nCOMPLIANCE RED FLAGS (user shows NO awareness of):\n- Risk assessment/management\n- Data quality requirements\n- Technical documentation\n- Human oversight mechanisms\n- Transparency to affected persons\n\n\nOUTPUT:\n{\n  \"high_risk_violations_detected\": true/false,\n  \"overall_confidence\": \"HIGH/MEDIUM/LOW\",\n  \"reasoning\": \"2-3 sentence summary including system type, deployment status, and compliance gaps if detected\"\n}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        688,
+        656
+      ],
+      "id": "54ddd5e3-c169-4da7-86d8-36d390c6649f",
+      "name": "High Risk Violation Detector"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a GDPR violation detector. Analyze if USER shares/processes personal data unlawfully.\n\nUser conversation: ###{{ $json.body.messages }}###\n\nPERSONAL DATA TO DETECT:\n- Direct identifiers: names+context, emails, phones, addresses, ID numbers\n- SPECIAL CATEGORY (highest risk): health data, biometric data, racial/ethnic origin, political opinions, religious beliefs, sexual orientation\n- Children's data (under 16): extra protection required\n- Indirect references to files that potentially may include personal data of customers, employee and so on (mark this as medium risk)\n\nVIOLATION PATTERNS:\n- Unlawful disclosure: sharing customer/user data in conversation without legal basis\n- Excessive collection: \"collect everything\", grabbing unnecessary data\n- Security gaps: unencrypted storage/transmission, sharing database access casually\n- Missing consent/legal basis: processing without legitimate basis, ignoring opt-outs\n- Rights violations: refusing deletion requests, blocking data access\n- Cross-border transfers: sending data outside EU without safeguards\n- References to files that may include personal data and information.\n\nANALYSIS FOCUS:\n- Is personal data present in THIS conversation? (actual breach)\n- Does user describe violating GDPR in their practices?\n- Special category or children's data involved? (highest severity)\n- User asking \"how to comply?\" vs actively violating?\n\nOUTPUT (JSON only):\n{\n  \"gdpr_violations_detected\": true/false,\n  \"overall_confidence\": \"HIGH/MEDIUM/LOW\",\n  \"reasoning\": \"2-3 sentence summary including data type, violation type, and severity if detected\"\n}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        688,
+        848
+      ],
+      "id": "ed745f39-6590-4273-b3b6-82a412b875bc",
+      "name": "GDPR Violation Detector"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"overall_risk_level\": \"CRITICAL/SEVERE/HIGH/MEDIUM/LOW\",\n  \"primary_violation\": \"single most serious issue or 'none detected'\",\n  \"confidence_level\": \"HIGH/MEDIUM/LOW\",\n  \"summary\": \"3-4 sentence overview synthesizing all agent findings and justifying risk level\",\n  \"violations_detected\": {\n    \"ai_act_prohibited\": \"true/false\",\n    \"ai_act_high_risk\": \"true/false\",\n    \"gdpr\": \"true/false\"\n  },\n  \"agent_findings\": {\n    \"critical_ai\": \"brief note from agent 1\",\n    \"high_risk_ai\": \"brief note from agent 2\",\n    \"gdpr\": \"brief note from agent 3\"\n  },\n  \"user_intent_assessment\": \"malicious/negligent/uninformed/educational/compliant\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1840,
+        880
+      ],
+      "id": "55c42f5f-e281-4c75-b66e-5632c29803e7",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "claude-sonnet-4-20250514",
+          "cachedResultName": "Claude 4 Sonnet"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        1712,
+        880
+      ],
+      "id": "4e9d0128-0b9c-4f4b-9932-b32ca04243f8",
+      "name": "Anthropic Chat Model1",
+      "credentials": {
+        "anthropicApi": {
+          "id": "z6xCnWnhjmBBh8rL",
+          "name": "Anthropic account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are the Final Risk Assessor. Synthesize findings from 3 specialist agents analyzing the same conversation for AI Act and GDPR violations.\n\nAGENT OUTPUTS:\nCritical Risk Agent: ##{{ $json.data[0].output }}##\nHigh Risk Agent: ##{{ $json.data[1].output }}##\nGDPR Agent: ##{{ $json.data[2].output }}##\n\nRISK LEVELS:\n- CRITICAL: Prohibited AI (high confidence) OR special category data breach OR deployed non-compliant high-risk AI\n- HIGH: High-risk AI in development without compliance OR multiple transparency violations OR significant GDPR gaps\n- MEDIUM: High-risk AI planning phase with some awareness OR minor violations OR compliance questions\n- LOW: Educational inquiry OR no violations OR compliant approach\n\nASSESSMENT PRIORITIES:\n1. Eliminate false positives (user asking about compliance vs violating)\n2. Identify most serious violation (prohibited AI > GDPR special category > high-risk AI > transparency)\n3. Consider deployment status (deployed = urgent, planning = preventable)\n4. Check user intent (malicious > negligent > uninformed)\n5. Assess confidence (if agents disagree on severity, explain why)\n\nOUTPUT (JSON):\n{\n  \"overall_risk_level\": \"CRITICAL/SEVERE/HIGH/MEDIUM/LOW\",\n  \"primary_violation\": \"single most serious issue or none detected\",\n  \"confidence_level\": \"HIGH/MEDIUM/LOW\",\n  \"summary\": \"3-4 sentence overview synthesizing all agent findings and justifying risk level\",\n  \"violations_detected\": {\n    \"ai_act_prohibited\": \"true/false\",\n    \"ai_act_high_risk\": \"true/false\",\n    \"gdpr\": \"true/false\"\n  },\n  \"agent_findings\": {\n    \"critical_ai\": \"brief note from agent 1\",\n    \"high_risk_ai\": \"brief note from agent 2\",\n    \"gdpr\": \"brief note from agent 3\"\n  },\n  \"user_intent_assessment\": \"malicious/negligent/uninformed/educational/compliant\"\n}\n\nIMPORTANT:\n- Prioritize actual harm over theoretical risks\n- If multiple agents detect violations, explain which is most critical\n- If no violations: check if user is asking educational questions (provide guide action)\n- Balance enforcement with education",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        1696,
+        656
+      ],
+      "id": "64a2497e-7466-484d-a9b3-d08d145cb2bc",
+      "name": "Final Aggregator"
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        2048,
+        656
+      ],
+      "id": "685bb19e-37df-4336-9702-9a3809723246",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "id": "2d84b8dc-b7f3-4c00-b482-1eb642a7e3a6",
+      "name": "Merge Agent Outputs",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1168,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1376,
+        656
+      ],
+      "id": "d2ed24a9-8b3a-4067-a615-a750c2f4a3e1",
+      "name": "Aggregate"
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "bonsay.app.n8n.cloud",
+            "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36",
+            "content-length": "294",
+            "accept": "application/json, text/plain, */*",
+            "accept-encoding": "gzip, br",
+            "accept-language": "en-GB,en-US;q=0.9,en;q=0.8",
+            "cdn-loop": "cloudflare; loops=1; subreqs=1",
+            "cf-connecting-ip": "2001:1530:1031:bfa8:75a6:58d6:3f13:5d57",
+            "cf-ew-via": "15",
+            "cf-ipcountry": "EE",
+            "cf-ray": "99e69fd1b28d5434-TLL",
+            "cf-visitor": "{\"scheme\":\"https\"}",
+            "cf-worker": "n8n.cloud",
+            "content-type": "application/json",
+            "origin": "http://161.35.195.115",
+            "priority": "u=1, i",
+            "referer": "http://161.35.195.115/",
+            "sec-ch-ua": "\"Chromium\";v=\"142\", \"Google Chrome\";v=\"142\", \"Not_A Brand\";v=\"99\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": "\"macOS\"",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "cross-site",
+            "x-forwarded-for": "2001:1530:1031:bfa8:75a6:58d6:3f13:5d57, 172.69.136.169",
+            "x-forwarded-host": "bonsay.app.n8n.cloud",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "traefik-prod-users-gwc-8-86454fd949-zdbgh",
+            "x-is-trusted": "yes",
+            "x-real-ip": "2001:1530:1031:bfa8:75a6:58d6:3f13:5d57"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "conversationId": "69172515-a3d4-8006-8cfc-642616800a18",
+            "messages": "User: Hey! I want to modify contract with my customer. Here is the file, can you edit general details for me?\nAI: Hey! I want to modify contract with my customer. Here is the file, can you edit general details for me?I can"
+          },
+          "webhookUrl": "https://bonsay.app.n8n.cloud/webhook/f435d3c2-458e-44ea-84a7-94373998d6aa",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Critical Risk Violation Detector",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "High Risk Violation Detector",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "GDPR Violation Detector",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Critical Risk Violation Detector",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "High Risk Violation Detector",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "GDPR Violation Detector",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Final Aggregator",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Final Aggregator",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Final Aggregator": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Critical Risk Violation Detector": {
+      "main": [
+        [
+          {
+            "node": "Merge Agent Outputs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "High Risk Violation Detector": {
+      "main": [
+        [
+          {
+            "node": "Merge Agent Outputs",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "GDPR Violation Detector": {
+      "main": [
+        [
+          {
+            "node": "Merge Agent Outputs",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Merge Agent Outputs": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Final Aggregator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "9c4c4bea-b069-45dc-8fab-c3491597f676",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b5978ccfa5e6bbcafd194ac355ee65a0f18c190587c5d63c0ff7322b42f7a5f9"
+  },
+  "id": "6qrWGCPPP375VLq0",
+  "tags": []
+}
