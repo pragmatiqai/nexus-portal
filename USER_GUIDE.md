@@ -4,6 +4,12 @@
 
 **Nexus Portal** is an AI Compliance Platform designed to help organizations monitor, analyze, and manage AI conversations with advanced risk assessment capabilities. The platform provides comprehensive compliance tracking for AI Act regulations, GDPR requirements, and other regulatory frameworks.
 
+Nexus Portal is part of the **Nexus AI Compliance Ecosystem**:
+- **Nexus Proxy**: Captures AI conversations in real-time as they occur between users and AI systems
+- **Nexus Portal** (this application): Displays and analyzes those conversations for compliance violations
+
+Together, these systems enable organizations to ensure regulatory compliance and identify potential risks before they become serious issues.
+
 This guide will help you navigate the portal and make the most of its features to ensure your AI systems meet regulatory requirements and organizational policies.
 
 ---
@@ -391,6 +397,20 @@ Both the Risk Assessment and Messages sections can be collapsed to save screen s
 
 The Sync feature ensures your conversation data is up-to-date and properly organized.
 
+### How Data Flows to the Portal
+
+Understanding the data flow helps you know when and why to sync:
+
+1. **Nexus Proxy Captures Conversations**: When users in your organization interact with ChatGPT through Nexus Proxy, every conversation is captured in real-time and immediately stored in Elasticsearch
+
+2. **Elasticsearch Stores Raw Messages**: Each user question and AI response is stored as an individual message document with metadata (username, timestamp, IP address, etc.)
+
+3. **Portal Syncs and Groups Data**: The Nexus Portal connects to Elasticsearch and groups individual messages into complete conversations based on conversation IDs and timestamps
+
+4. **Portal Displays Conversations**: Once synchronized, conversations appear in the Portal where compliance teams can view, filter, and assess them
+
+**Key Point**: New conversations captured by Nexus Proxy are not automatically visible in the Portal. You must run a sync to pull the latest data from Elasticsearch and refresh the conversation list.
+
 ### Using the Sync Button
 
 1. In the Conversations view, locate the **Sync Conversations** button
@@ -402,19 +422,24 @@ The Sync feature ensures your conversation data is up-to-date and properly organ
 
 ### When to Sync
 
-- When you first access the portal and see no conversations
-- After new AI conversations have occurred in your system
-- If the conversation list appears outdated
-- After significant changes to your data source
+- **When you first access the portal** and see no conversations
+- **At the start of your compliance review session** to ensure you have the latest data
+- **After being notified of new AI activity** in your organization
+- **When the conversation list appears outdated** or missing recent activity
+- **Periodically throughout the day** if active monitoring is required (e.g., every hour)
 
 ### What Sync Does
 
 The synchronization process:
-- Connects to your Elasticsearch data source
-- Groups individual messages into conversations
-- Updates the conversation index
-- Refreshes risk assessments
-- Updates user lists and statistics
+- Connects to your Elasticsearch data source where Nexus Proxy stores captured conversations
+- Retrieves all messages that have been captured since the last sync
+- Groups individual messages into conversations based on conversation IDs
+- Updates the conversation index with new and modified conversations
+- Refreshes user lists for the user filter dropdown
+- Updates dashboard statistics (total conversations, messages, etc.)
+- Preserves existing risk assessment results while adding new conversations
+
+**Note**: Sync does not re-run risk assessments. Risk assessments must be triggered manually on individual conversations using the AI Risk Assessment button.
 
 ---
 
@@ -804,6 +829,8 @@ If you need assistance with the Nexus Portal:
 
 **n8n**: The workflow automation platform that orchestrates the multi-agent risk assessment process
 
+**Nexus Proxy**: The companion system that captures AI conversations in real-time by acting as an intelligent MITM proxy between users and AI services (particularly ChatGPT). All conversations displayed in the Portal originate from Nexus Proxy
+
 **Primary Violation**: The single most serious compliance issue detected in a conversation
 
 **Prohibited AI Practices**: AI uses that are completely forbidden under the EU AI Act (social scoring, real-time biometric ID in public spaces, etc.)
@@ -828,4 +855,4 @@ If you need assistance with the Nexus Portal:
 
 **Built with ❤️ by PragmatiqAI**
 
-*Last Updated: December 2024*
+*Last Updated: December 2025*
