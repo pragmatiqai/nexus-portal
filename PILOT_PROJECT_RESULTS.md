@@ -7,7 +7,6 @@ This document presents the results of a 40-day pilot deployment of the Nexus AI 
 **Key Results**:
 - **92% detection rate** for intentionally created Critical and High Risk EU AI Act violations
 - **84% detection rate** for simulated GDPR violation scenarios
-- **30+ non-intentional medium or high-risk conversations** discovered beyond test scenarios
 - **Complete visibility** into AI usage across sales, marketing, and compliance teams
 - **Actionable insights** delivered through centralized compliance dashboard
 
@@ -81,12 +80,11 @@ The pilot project aimed to:
 - Risk assessment and audit activities
 - Direct users of Nexus Portal for monitoring and assessment
 
-**Total Users**: Core team members (exact number not disclosed)
+**Total Users**: Core team members (7 people)
 
 ### Technology Deployment
 
 **Nexus Proxy**:
-- Deployed on Income Company's network infrastructure
 - All team members configured to route ChatGPT traffic through the proxy
 - MITM certificates distributed and installed
 - User authentication implemented with individual credentials
@@ -194,57 +192,6 @@ Analysis showed:
 
 These findings highlight areas for agent refinement, particularly around contextual understanding and implicit references.
 
-### Organic Discovery: Non-Intentional Violations
-
-Beyond the controlled test scenarios, the system discovered **30+ medium or high-risk conversations** that were not part of deliberate testing.
-
-**Significance**: These represent **actual compliance risks** that would have gone undetected without Nexus monitoring.
-
-**Categories of Discovered Violations**:
-
-**1. Unintentional Personal Data Sharing (14 conversations)**
-
-Employees inadvertently shared customer or investor information:
-- "Help me draft an email to John Smith about his €50,000 investment in Loan #12345"
-- "Review this customer support conversation with investor jane.doe@email.com about her account"
-- Pasting portions of CRM data for analysis without realizing it contained PII
-
-**Risk Level**: MEDIUM to HIGH depending on data sensitivity
-
-**2. High-Risk AI System Discussions Without Compliance Awareness (8 conversations)**
-
-Team members exploring AI solutions for business processes without understanding regulatory implications:
-- Sales team asking about AI tools to predict which investors are most likely to default
-- Marketing discussing AI-powered credit risk scoring for targeted campaigns
-- Operations asking about automated loan approval systems
-
-**Risk Level**: HIGH (potential deployment of high-risk AI systems without compliance framework)
-
-**3. Cross-Border Data Transfer Concerns (5 conversations)**
-
-Discussions indicating potential GDPR violations:
-- Asking about storing investor data in US-based systems without adequate safeguards
-- Questions about sharing loan applicant data with originator partners in non-EU countries
-- Cloud service discussions without mention of data protection agreements
-
-**Risk Level**: MEDIUM to HIGH
-
-**4. Security and Access Control Issues (3 conversations)**
-
-Problematic data handling practices:
-- Asking ChatGPT to help troubleshoot database access (included sharing partial credentials)
-- Discussion of storing customer financial documents without encryption
-- Questions about sharing investor reports via unsecured email
-
-**Risk Level**: MEDIUM to HIGH
-
-**Impact**: Each of these conversations provided opportunities for:
-- **Immediate Intervention**: Compliance team could stop problematic practices before harm occurred
-- **Employee Education**: Targeted training for individuals who made mistakes
-- **Policy Improvement**: Identification of unclear policies or gaps in employee training
-- **Risk Mitigation**: Prevention of potential GDPR fines or AI Act violations
-
----
 
 ## Compliance Manager Experience
 
@@ -290,8 +237,6 @@ The Income Company compliance manager had access to the Nexus Portal throughout 
 
 ✅ **Complete Visibility**: "For the first time, we could see exactly how our team is using AI and what they're asking it to do."
 
-✅ **Early Detection**: "We discovered issues before they became real violations. Several conversations would have led to GDPR breaches if we hadn't intervened."
-
 ✅ **Prioritization**: "The risk levels help us focus on what matters. We can't review 100% of conversations, but we can review 100% of critical issues."
 
 ✅ **Educational Value**: "The assessments explain *why* something is a violation, which helps us train employees more effectively."
@@ -304,70 +249,6 @@ The Income Company compliance manager had access to the Nexus Portal throughout 
 
 ⚠️ **Context Limitations**: "The system sometimes missed violations that were spread across multiple conversations or relied heavily on implicit context."
 
-⚠️ **Assessment Speed**: "1-2 minutes per assessment is acceptable, but with hundreds of conversations, we needed to be selective about what to assess."
-
-⚠️ **User Interface**: "Some workflow improvements would help, like bulk actions (assess multiple conversations) or saved filter presets."
-
-### Operational Impact
-
-**Time Investment**:
-- Initial setup: ~4 hours (certificate distribution, proxy configuration, portal training)
-- Daily monitoring: ~30 minutes (sync, review dashboard, prioritize high-risk items)
-- Weekly deep-dive: ~2 hours (assess suspicious conversations, contact employees, document actions)
-- Total: ~14 hours over 40 days (~21 hours/month)
-
-**ROI Consideration**:
-- Single GDPR fine avoided (average €50,000-€500,000) far exceeds monitoring costs
-- Single AI Act violation prevented (up to €35 million) justifies entire program
-- Employee education and risk awareness improvements have long-term value
-- Audit readiness and regulatory compliance documentation benefits
-
-**Verdict**: Compliance manager deemed the platform "highly valuable for the time invested."
-
----
-
-## Statistical Summary
-
-### Overall Pilot Metrics
-
-| Metric | Value |
-|--------|-------|
-| **Pilot Duration** | 40 days |
-| **Participating Departments** | 3 (Sales, Marketing, Compliance) |
-| **Total Conversations Captured** | ~[Not disclosed - company confidential] |
-| **Total Messages Captured** | ~[Not disclosed - company confidential] |
-| **Intentional AI Act Violations (Test Scenarios)** | Multiple scenarios |
-| **AI Act Detection Rate** | 92% |
-| **Intentional GDPR Violations (Test Scenarios)** | Multiple scenarios |
-| **GDPR Detection Rate** | 84% |
-| **Non-Intentional Violations Discovered** | 30+ (MEDIUM to HIGH risk) |
-| **False Positive Rate** | ~[Estimated low, exact % not measured] |
-| **Compliance Manager Time Investment** | ~14 hours (21 hours/month equivalent) |
-
-### Detection Breakdown
-
-**AI Act Violations**:
-- ✅ Detected: 92%
-- ❌ Missed: 8%
-
-**GDPR Violations**:
-- ✅ Detected: 84%
-- ❌ Missed: 16%
-
-**Non-Intentional Discoveries**:
-- Personal Data Sharing: 14 conversations
-- High-Risk AI Systems: 8 conversations
-- Cross-Border Transfers: 5 conversations
-- Security Issues: 3 conversations
-- **Total**: 30+ conversations
-
-**Risk Level Distribution** (Non-Intentional):
-- CRITICAL: [Subset of 30+]
-- HIGH: [Subset of 30+]
-- MEDIUM: [Subset of 30+]
-- LOW: [Not counted in the 30+]
-
----
 
 ## Key Findings and Insights
 
@@ -398,112 +279,6 @@ The Income Company compliance manager had access to the Nexus Portal throughout 
 - Improved handling of implicit references and technical jargon
 - Fine-tuning of confidence scoring to reduce false positives
 
-### 3. Significant Value from Organic Discovery
-
-**Finding**: Beyond validating detection of known violation types, the system discovered 30+ real compliance risks that were not part of test scenarios.
-
-**Evidence**:
-- 14 unintentional personal data sharing incidents
-- 8 high-risk AI system discussions without compliance awareness
-- 5 cross-border data transfer concerns
-- 3 security and access control issues
-
-**Implication**: The platform's primary value proposition is not just detecting what you're testing for, but **discovering what you don't know to look for**. This "unknown unknowns" discovery is critical for comprehensive compliance programs.
-
-### 4. Compliance Manager Empowerment
-
-**Finding**: Nexus Portal transforms compliance monitoring from reactive (responding to incidents) to proactive (preventing violations).
-
-**Evidence**:
-- Compliance manager could prioritize highest-risk conversations
-- Early intervention prevented actual violations
-- Data-driven employee training based on specific issues
-- Audit trail creation for regulatory defense
-
-**Implication**: Organizations can shift from "we hope employees are compliant" to "we know employees are compliant and have evidence."
-
-### 5. Fintech-Specific Compliance Challenges
-
-**Finding**: Income Company's fintech context revealed specific AI compliance challenges relevant to the financial services sector.
-
-**Evidence**:
-- Credit scoring and risk assessment are high-risk AI systems under EU AI Act
-- Personal financial data requires strict GDPR protection
-- Cross-border loan origination creates data transfer complexity
-- Investment advisory has regulatory and ethical dimensions
-
-**Implication**: Fintech organizations face particularly acute AI compliance risks and can benefit substantially from Nexus-type monitoring. Similar value likely exists in other regulated sectors (healthcare, legal, HR, education).
-
-### 6. Employee Education Opportunities
-
-**Finding**: Many violations stemmed from lack of awareness rather than malicious intent.
-
-**Evidence**:
-- User intent assessment showed "uninformed" or "negligent" more common than "malicious"
-- Employees often didn't realize that sharing customer names/emails with ChatGPT was a GDPR violation
-- Sales and marketing teams unaware that discussing AI credit scoring triggers AI Act high-risk requirements
-
-**Implication**: Compliance programs should emphasize education and training alongside monitoring. Nexus findings can inform targeted training content.
-
----
-
-## Lessons Learned
-
-### For Organizations Considering Nexus Deployment
-
-**1. Executive Sponsorship is Critical**
-- Pilot succeeded because Income Company leadership committed to compliance monitoring
-- Employee cooperation requires top-down messaging about importance
-- Budget and resources must be allocated for setup and ongoing monitoring
-
-**2. Change Management Matters**
-- Transparent communication about monitoring prevents employee resistance
-- Emphasize "we're monitoring to protect you" not "we're monitoring to catch you"
-- Provide clear guidelines on acceptable AI usage
-
-**3. Start Small, Scale Gradually**
-- Piloting with core team (sales, marketing, compliance) allowed focused evaluation
-- Lessons learned can inform broader rollout to entire organization
-- Iterative deployment reduces risk and builds confidence
-
-**4. Plan for Compliance Resources**
-- Monitoring generates work for compliance teams (reviewing conversations, contacting employees, documenting actions)
-- Allocate ~20-30 hours/month for compliance manager time
-- Consider scaling compliance team as monitoring expands
-
-**5. Integrate with Existing Processes**
-- Nexus findings should feed into existing training programs, policy updates, and risk management
-- Don't treat it as standalone—make it part of comprehensive compliance framework
-
-### For Nexus Platform Development
-
-**1. Continue Agent Training and Refinement**
-- Analyze all missed violations (8% AI Act, 16% GDPR) to identify improvement areas
-- Incorporate learnings into agent prompts and training data
-- Set roadmap targets: 95%+ detection rates
-
-**2. Enhance Contextual Understanding**
-- Improve handling of multi-turn conversations where context spans many messages
-- Better recognition of implicit references to personal data or AI systems
-- Develop capability to link related conversations by same user
-
-**3. Reduce False Positives**
-- Refine distinction between educational questions and actual violations
-- Improve confidence scoring calibration
-- Provide more nuanced risk levels (e.g., "LOW-MEDIUM" for edge cases)
-
-**4. User Interface Enhancements**
-- Bulk assessment capabilities for compliance teams
-- Saved filter presets for common review workflows
-- Export and reporting features for regulatory documentation
-- Mobile-responsive design for on-the-go monitoring
-
-**5. Expand Coverage**
-- Support for additional AI platforms beyond ChatGPT (Claude, Gemini, etc.)
-- Industry-specific agent configurations (fintech, healthcare, HR)
-- Customizable violation definitions based on organizational policies
-
----
 
 ## Conclusions
 
@@ -513,87 +288,9 @@ The 40-day pilot at Income Company OÜ successfully validated the Nexus AI Compl
 
 **Primary Achievements**:
 1. ✅ **High Detection Rates**: 92% AI Act, 84% GDPR validation demonstrates production readiness
-2. ✅ **Organic Discovery**: 30+ non-intentional violations found proves value beyond test scenarios
+2. ✅ **Organic Discovery**: some non-intentional violations found proves value beyond test scenarios
 3. ✅ **Operational Feasibility**: System operated transparently without workflow disruption
 4. ✅ **Compliance Value**: Compliance manager gained actionable insights and early intervention capabilities
 5. ✅ **Foundation for Improvement**: Clear roadmap for enhancing detection rates and capabilities
 
-### Business Case for Nexus Adoption
 
-**For Organizations**:
-- **Risk Mitigation**: Prevent €50K-€35M fines from AI Act and GDPR violations
-- **Early Detection**: Discover and stop violations before regulatory consequences
-- **Audit Readiness**: Documented evidence of compliance monitoring for regulators
-- **Employee Education**: Data-driven insights for targeted training programs
-- **Competitive Advantage**: Demonstrate responsible AI usage to customers and partners
-
-**For Compliance Teams**:
-- **Visibility**: See what employees are actually doing with AI systems
-- **Prioritization**: Focus on highest-risk issues first
-- **Efficiency**: Automated assessment reduces manual review burden
-- **Documentation**: Built-in audit trail for regulatory defense
-
-### Next Steps
-
-**Immediate (Q1 2025)**:
-- Refine agent algorithms based on pilot learnings (target 95%+ detection rates)
-- Implement UI enhancements requested by compliance manager
-- Develop fintech-specific agent configurations leveraging Income Company insights
-- Prepare case study and marketing materials based on pilot results
-
-**Short-Term (Q2 2025)**:
-- Expand pilot to additional Income Company departments
-- Onboard 2-3 additional pilot customers in different industries (healthcare, legal, HR)
-- Develop industry-specific compliance templates
-- Build out reporting and export capabilities
-
-**Medium-Term (H2 2025)**:
-- General availability release for Nexus platform
-- Support for additional AI platforms (Claude, Gemini, Perplexity)
-- Advanced analytics and trend detection features
-- Integration with GRC (Governance, Risk, Compliance) platforms
-
-**Long-Term (2026+)**:
-- AI compliance benchmarking across industries
-- Automated remediation workflows
-- Predictive risk scoring
-- Real-time alerts for critical violations
-
----
-
-## Acknowledgments
-
-**Income Company OÜ** for their partnership, transparency, and commitment to responsible AI usage. Special thanks to:
-- The compliance manager for dedicated participation and valuable feedback
-- Sales, marketing, and compliance team members for cooperation during the pilot
-- Executive leadership for supporting the initiative
-
-**PragmatiqAI** development team for:
-- Deploying and maintaining Nexus infrastructure during the pilot
-- Providing responsive support and addressing technical issues
-- Analyzing results and incorporating learnings into product roadmap
-
-This pilot represents an important milestone in making AI compliance monitoring accessible, effective, and actionable for organizations navigating the complex regulatory landscape of the EU AI Act and GDPR.
-
----
-
-## Contact Information
-
-**For pilot program inquiries**:
-- Email: andres.gavriljuk@pragmatiqai.com
-- Website: [PragmatiqAI - Nexus Platform]
-
-**For Income Company information**:
-- Website: [Income Company - Investment Platform]
-
----
-
-**Document Prepared By**: PragmatiqAI
-**Date**: December 2025
-**Version**: 1.0
-
----
-
-*This pilot project validates that responsible AI usage is achievable through continuous monitoring, intelligent assessment, and proactive compliance management. Nexus provides the tools organizations need to harness AI's power while managing its risks.*
-
-**Built with ❤️ by PragmatiqAI**
