@@ -66,6 +66,17 @@ function Login({ onLogin }) {
             Sign In
           </button>
         </form>
+
+        <div className="login-footer">
+          <img
+            src="/Kaasrahastanud_EL_kaksiklogod_ENG_hor_color_RGB.jpg"
+            alt="Co-funded by the European Union"
+            className="eu-funding-logo"
+          />
+          <p className="eu-funding-text">
+            PragmatiqAI received a 35,000.00 EUR grant from EAS and the European Regional Development Fund to develop an innovative technical solution that enables companies and public sector institutions to use modern artificial intelligence solutions, such as Microsoft Copilot and ChatGPT, in a secure manner and in full compliance with all European Union regulatory requirements. The platform helps prevent the leakage of sensitive and business-critical information and ensures that all AI usage is documented and transparent.
+          </p>
+        </div>
       </div>
     </div>
   );

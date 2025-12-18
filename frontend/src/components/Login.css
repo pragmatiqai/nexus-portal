@@ -140,3 +140,24 @@
   font-weight: 600;
   color: var(--foreground);
 }
+
+.login-footer {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+.eu-funding-logo {
+  max-width: 280px;
+  height: auto;
+  margin-bottom: 1rem;
+}
+
+.eu-funding-text {
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: var(--muted-foreground);
+  text-align: justify;
+  margin: 0;
+}
